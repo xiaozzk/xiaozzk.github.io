@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>jvm on Zhenkun Blog</title>
-    <link>https://xiaozzk.github.io/myblog/tags/jvm/</link>
+    <link>https://xiaozzk.github.io/tags/jvm/</link>
     <description>Recent content in jvm on Zhenkun Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 04 Jun 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://xiaozzk.github.io/myblog/tags/jvm/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 04 Jun 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://xiaozzk.github.io/tags/jvm/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>JVM相关分享(内存模型/垃圾回收)</title>
-      <link>https://xiaozzk.github.io/myblog/post/jvm/</link>
+      <link>https://xiaozzk.github.io/post/jvm/</link>
       <pubDate>Fri, 04 Jun 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://xiaozzk.github.io/myblog/post/jvm/</guid>
+      <guid>https://xiaozzk.github.io/post/jvm/</guid>
       <description>JVM内存模型&amp;amp;垃圾回收 思维导图 什么是JMM(Java内存模型) Java内存模型(Java Memory Model简称JMM)是一种抽象的概念，</description>
     </item>
     

@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>SQL on Zhenkun Blog</title>
-    <link>https://xiaozzk.github.io/myblog/tags/sql/</link>
+    <link>https://xiaozzk.github.io/tags/sql/</link>
     <description>Recent content in SQL on Zhenkun Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 15 Jul 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://xiaozzk.github.io/myblog/tags/sql/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 15 Jul 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://xiaozzk.github.io/tags/sql/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Mysql索引相关分享</title>
-      <link>https://xiaozzk.github.io/myblog/post/mysql-share/</link>
+      <link>https://xiaozzk.github.io/post/mysql-share/</link>
       <pubDate>Wed, 15 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://xiaozzk.github.io/myblog/post/mysql-share/</guid>
+      <guid>https://xiaozzk.github.io/post/mysql-share/</guid>
       <description>Mysql索引相关分享 思维导图 Mysql索引介绍 官方对索引的定义为：索引（Index）是帮助MySQL高效获取数据的数据结构 思想：空间换时间</description>
     </item>
     

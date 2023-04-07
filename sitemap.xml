@@ -2,57 +2,57 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://xiaozzk.github.io/myblog/categories/</loc>
+    <loc>https://xiaozzk.github.io/categories/</loc>
     <lastmod>2023-04-06T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://xiaozzk.github.io/myblog/tags/life/</loc>
+    <loc>https://xiaozzk.github.io/tags/life/</loc>
     <lastmod>2023-04-06T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://xiaozzk.github.io/myblog/categories/life/</loc>
+    <loc>https://xiaozzk.github.io/categories/life/</loc>
     <lastmod>2023-04-06T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://xiaozzk.github.io/myblog/post/</loc>
+    <loc>https://xiaozzk.github.io/post/</loc>
     <lastmod>2023-04-06T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://xiaozzk.github.io/myblog/tags/</loc>
+    <loc>https://xiaozzk.github.io/tags/</loc>
     <lastmod>2023-04-06T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://xiaozzk.github.io/myblog/</loc>
+    <loc>https://xiaozzk.github.io/</loc>
     <lastmod>2023-04-06T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://xiaozzk.github.io/myblog/post/life20230406/</loc>
+    <loc>https://xiaozzk.github.io/post/life20230406/</loc>
     <lastmod>2023-04-06T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://xiaozzk.github.io/myblog/tags/java/</loc>
+    <loc>https://xiaozzk.github.io/tags/java/</loc>
     <lastmod>2021-06-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://xiaozzk.github.io/myblog/tags/jvm/</loc>
+    <loc>https://xiaozzk.github.io/tags/jvm/</loc>
     <lastmod>2021-06-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://xiaozzk.github.io/myblog/post/jvm/</loc>
+    <loc>https://xiaozzk.github.io/post/jvm/</loc>
     <lastmod>2021-06-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://xiaozzk.github.io/myblog/categories/tech/</loc>
+    <loc>https://xiaozzk.github.io/categories/tech/</loc>
     <lastmod>2021-06-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://xiaozzk.github.io/myblog/post/mysql-share/</loc>
+    <loc>https://xiaozzk.github.io/post/mysql-share/</loc>
     <lastmod>2020-07-15T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://xiaozzk.github.io/myblog/tags/sql/</loc>
+    <loc>https://xiaozzk.github.io/tags/sql/</loc>
     <lastmod>2020-07-15T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://xiaozzk.github.io/myblog/tags/spring-cloud/</loc>
+    <loc>https://xiaozzk.github.io/tags/spring-cloud/</loc>
     <lastmod>2019-12-01T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://xiaozzk.github.io/myblog/post/springcloudconfig/</loc>
+    <loc>https://xiaozzk.github.io/post/springcloudconfig/</loc>
     <lastmod>2019-12-01T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://xiaozzk.github.io/myblog/about/</loc>
+    <loc>https://xiaozzk.github.io/about/</loc>
   </url><url>
-    <loc>https://xiaozzk.github.io/myblog/notes/</loc>
+    <loc>https://xiaozzk.github.io/notes/</loc>
   </url><url>
-    <loc>https://xiaozzk.github.io/myblog/search/placeholder/</loc>
+    <loc>https://xiaozzk.github.io/search/placeholder/</loc>
   </url><url>
-    <loc>https://xiaozzk.github.io/myblog/search/</loc>
+    <loc>https://xiaozzk.github.io/search/</loc>
   </url>
 </urlset>

@@ -2,26 +2,26 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Categories on Zhenkun Blog</title>
-    <link>https://xiaozzk.github.io/myblog/categories/</link>
+    <link>https://xiaozzk.github.io/categories/</link>
     <description>Recent content in Categories on Zhenkun Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 06 Apr 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://xiaozzk.github.io/myblog/categories/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 06 Apr 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://xiaozzk.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>life</title>
-      <link>https://xiaozzk.github.io/myblog/categories/life/</link>
+      <link>https://xiaozzk.github.io/categories/life/</link>
       <pubDate>Thu, 06 Apr 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://xiaozzk.github.io/myblog/categories/life/</guid>
+      <guid>https://xiaozzk.github.io/categories/life/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Tech</title>
-      <link>https://xiaozzk.github.io/myblog/categories/tech/</link>
+      <link>https://xiaozzk.github.io/categories/tech/</link>
       <pubDate>Fri, 04 Jun 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://xiaozzk.github.io/myblog/categories/tech/</guid>
+      <guid>https://xiaozzk.github.io/categories/tech/</guid>
       <description></description>
     </item>
     
