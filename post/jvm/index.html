@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Zhenkun Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://zhenkun.github.io//img/home-backgroupd.jpg">
+    <meta property="twitter:image" content="https://zhenkun.github.io//img/home-backgroupd.jpg" />
+    
+
+    
+    <meta name="title" content="JVM相关分享(内存模型/垃圾回收)" />
+    <meta property="og:title" content="JVM相关分享(内存模型/垃圾回收)" />
+    <meta property="twitter:title" content="JVM相关分享(内存模型/垃圾回收)" />
+    
+
+    
+    <meta name="description" content="介绍JVM内存模型及垃圾回收机制">
+    <meta property="og:description" content="介绍JVM内存模型及垃圾回收机制" />
+    <meta property="twitter:description" content="介绍JVM内存模型及垃圾回收机制" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="朱镇昆, Zhenkun, Zhenkun Blog, 博客, 个人网站, 互联网, Web, 微服务, Microservice">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>JVM相关分享(内存模型/垃圾回收) | 镇昆的博客 | Zhenkun Blog</title>
+
+    <link rel="canonical" href="/post/jvm/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link href="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@5.15.1/css/all.css" rel="stylesheet" type="text/css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Zhenkun Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/life/">life</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/home-backgroupd.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/java" title="java">
+                            java
+                        </a>
+                        
+                        <a class="tag" href="/tags/jvm" title="jvm">
+                            jvm
+                        </a>
+                        
+                    </div>
+                    <h1>JVM相关分享(内存模型/垃圾回收)</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                Zhenkun
+                             
+                            on 
+                            Friday, June 4, 2021
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <h1 id="jvm内存模型垃圾回收">JVM内存模型&amp;垃圾回收</h1>
+<h2 id="思维导图">思维导图</h2>
+<p>
+  <img src="/post-img/jvmmm/mind.png" alt="mind">
+
+</p>
+<h2 id="什么是jmmjava内存模型">什么是JMM(Java内存模型)</h2>
+<p>Java内存模型(Java Memory Model简称JMM)是一种抽象的概念，并不真实存在，它描述的是一组规则或规范，通过这组规范定义了程序中各个变量（包括实例字段，静态字段和构成数组对象的元素）的访问方式。
+JMM用来屏蔽掉各种硬件和操作系统的内存访问差异，以实现让Java程序在各个平台下都能一致的内存访问效果。JMM是围绕着原子性，有序性、可见性建立的</p>
+<p>
+  <img src="/post-img/jvmmm/jmmwork.png" alt="jmmwork">
+
+</p>
+<h2 id="jvm内存模型划分">JVM内存模型划分</h2>
+<p>
+  <img src="/post-img/jvmmm/jvmmm.png" alt="jmmwork">
+
+</p>
+<p>JVM 内存区域主要分为线程私有区域【程序计数器、虚拟机栈、本地方法栈】、线程共享区 域【JAVA 堆、方法区】、直接内存。</p>
+<h3 id="程序计数器线程私有">程序计数器(线程私有)</h3>
+<p>一块较小的内存空间, 是当前线程所执行的字节码的行号指示器，每条线程都要有一个独立的 程序计数器，这类内存也称为“线程私有”的内存。 正在执行 java 方法的话，计数器记录的是虚拟机字节码指令的地址（当前指令的地址）。如 果还是 Native 方法，则为空。 这个内存区域是唯一一个在虚拟机中没有规定任何 OutOfMemoryError 情况的区域。</p>
+<h3 id="虚拟机栈线程私有">虚拟机栈(线程私有)</h3>
+<p>是描述java方法执行的内存模型，每个方法在执行的同时都会创建一个栈帧（Stack Frame） 用于存储局部变量表、操作数栈、动态链接、方法出口等信息。每一个方法从调用直至执行完成 的过程，就对应着一个栈帧在虚拟机栈中入栈到出栈的过程。 栈帧（ Frame）是用来存储数据和部分过程结果的数据结构，同时也被用来处理动态链接 (Dynamic Linking)、 方法返回值和异常分派（ Dispatch Exception）。栈帧随着方法调用而创 13/04/2018 Page 23 of 283 建，随着方法结束而销毁——无论方法是正常完成还是异常完成（抛出了在方法内未被捕获的异 常）都算作方法结束。</p>
+<h3 id="本地方法栈线程私有">本地方法栈(线程私有)</h3>
+<p>本地方法区和 Java Stack 作用类似, 区别是虚拟机栈为执行 Java 方法服务, 而本地方法栈则为 Native 方法服务, 如果一个 VM 实现使用 C-linkage 模型来支持 Native 调用, 那么该栈将会是一个 C 栈，但 HotSpot VM 直接就把本地方法栈和虚拟机栈合二为一。</p>
+<h3 id="堆heap-线程共享">堆（Heap-线程共享）</h3>
+<p>是被线程共享的一块内存区域，创建的对象和数组都保存在 Java 堆内存中，也是垃圾收集器进行 垃圾收集的最重要的内存区域。由于现代 VM 采用分代收集算法, 因此 Java 堆从 GC 的角度还可以 细分为: 新生代(Eden 区、From Survivor 区和 To Survivor 区)和老年代。</p>
+<h3 id="方法区永久代线程共享">方法区/永久代（线程共享）</h3>
+<p>即我们常说的永久代(Permanent Generation), 用于存储被 JVM 加载的类信息、常量、静 态变量、即时编译器编译后的代码等数据. HotSpot VM把GC分代收集扩展至方法区, 即使用Java 堆的永久代来实现方法区, 这样 HotSpot 的垃圾收集器就可以像管理 Java 堆一样管理这部分内存,  而不必为方法区开发专门的内存管理器(永久带的内存回收的主要目标是针对常量池的回收和类型 的卸载, 因此收益一般很小)。 运行时常量池（Runtime Constant Pool）是方法区的一部分。Class 文件中除了有类的版 本、字段、方法、接口等描述等信息外，还有一项信息是常量池 13/04/2018 Page 24 of 283 （Constant Pool Table），用于存放编译期生成的各种字面量和符号引用，这部分内容将在类加 载后存放到方法区的运行时常量池中。 Java 虚拟机对 Class 文件的每一部分（自然也包括常量 池）的格式都有严格的规定，每一个字节用于存储哪种数据都必须符合规范上的要求，这样才会 被虚拟机认可、装载和执行。</p>
+<h2 id="垃圾回收gc">垃圾回收GC</h2>
+<p>Garbage Collection需要完成的事情：
+1.哪些内存需要回收？
+2.什么时候回收？
+3.如何回收？</p>
+<h2 id="如何判断对象可回收">如何判断对象可回收</h2>
+<h2 id="1引用计数算法reference-counting">1.引用计数算法（Reference Counting）：</h2>
+<p>给对象添加一个引用计数器，每当有一个地方引用它时，计数器就+1，当引用失效时，计数器-1。当计数器为0时表示该对象不再被引用。
+**优点：**实现简单、判断效率高
+**缺点：**很难解决对象之间循环引用的问题</p>
+<p>
+  <img src="/post-img/jvmmm/gc-reference.png" alt="img">
+
+</p>
+<h2 id="2可达性分析算法reachability-analysis">2.可达性分析算法（Reachability Analysis）：</h2>
+<p>通过一系列的称为“GC Roots”的对象作为起始点，从这些节点开始向下搜索，搜索所走过的路径称为引用链(Reference Chain)，当一个对象到GC Roots没有使用任何引用链时，则说明该对象是不可用的。</p>
+<p>**优点：**更加精确和严谨，可以分析出循环数据结构相互引用的情况
+**缺点：**实现比较复杂、需要分析大量数据，消耗大量时间、分析过程需要GC停顿
+
+  <img src="/post-img/jvmmm/gc-root.png" alt="img">
+
+</p>
+<p>Java语言中，可以作为GC Roots的对象包括如下几种：</p>
+<ul>
+<li>虚拟机栈（栈帧中的本地变量表）中引用的对象</li>
+<li>方法区中类静态属性引用的对象</li>
+<li>方法区中常量引用的对象</li>
+<li>本地方法栈中JNI(即一般说的Native方法)应用的对象</li>
+</ul>
+<h2 id="垃圾回收算法">垃圾回收算法</h2>
+<h3 id="标记-清除算法mark-sweep">标记-清除算法（Mark-Sweep）</h3>
+<p>**优点：**是最基础的收集算法</p>
+<p>**缺点：**效率不高，产生内存碎片</p>
+<p>
+  <img src="/post-img/jvmmm/gc-mark-sweep.png" alt="img">
+
+</p>
+<h3 id="复制算法copying">复制算法（Copying）</h3>
+<p><strong>优点：</strong>
+实现简单，效率高。解决了标记-清除算法导致的内存碎片问题</p>
+<p><strong>缺点：</strong>
+代价太大，将内存缩小了一半</p>
+<p>商业虚拟机采用这钟算法回收新生代。
+HotSpot虚拟机默认比例：
+Eden:From:To = 8:1:1
+当Survivor空间不足时依赖其他内存进行分配担保(Handler Promotion)</p>
+<p>
+  <img src="/post-img/jvmmm/gc-copy.png" alt="img">
+
+</p>
+<h3 id="标记-整理算法mark-compact">标记-整理算法（Mark-Compact）</h3>
+<p><strong>优点：</strong>
+不会产生内存碎片</p>
+<p><strong>缺点：</strong>
+效率更低</p>
+<p>
+  <img src="/post-img/jvmmm/gc-compact.png" alt="img">
+
+</p>
+<h3 id="分代收集算法generational-collection">分代收集算法（Generational Collection）</h3>
+<p>对象首先分配在Eden区
+新生代空间不足时，触发Minor GC（该GC会触发Stop-The-World），伊甸园和幸存区From存活的对象复制到To区，存活的对象年龄+1，并且交换From和To的位置，当年龄达到一定程度时，则晋升至老年代
+当老年代空间不足时，会先触发Minor GC，如果空间依旧不足，则触发Full GC， Stop-The-World时间更长
+
+  <img src="/post-img/jvmmm/gc-generation.png" alt="img">
+
+</p>
+<h2 id="典型的gc收集器">典型的GC收集器</h2>
+<h4 id="cmsconcurrent-mark-sweep收集器---响应时间优先">CMS（Concurrent Mark Sweep）收集器 - 响应时间优先</h4>
+<p>这是一种以获取最短回收停顿时间为目标的收集器。该收集器基于标记-清除算法实现。
+
+  <img src="/post-img/jvmmm/gc-cms.png" alt="img">
+
+
+初始标记（CMS initial mark): 仅仅只是标记一下GC Roots能直接关联到的对象，速度很快</p>
+<p>并发标记（CMS concurrent mark）: 进行GC Roots tracing</p>
+<p>重新标记（CMS remark）:修正并发标记期间因用户程序继续运作而导致标记产生变动的那一部分对象的标记记录</p>
+<p>并发清除（CMS concurrent sweep）</p>
+<p><strong>优点：</strong></p>
+<ol>
+<li>并发收集</li>
+<li>低停顿</li>
+</ol>
+<p><strong>缺点：</strong></p>
+<ol>
+<li>对CPU资源非常敏感</li>
+<li>无法处理浮动垃圾（Floating Garbage），可能出现Concurrent Mode Failure导致另一次Full GC</li>
+<li>基于标记-清除算法可能产生空间碎片-XX:+UserCMSCompactAtFullCollection 用于碎片整合 -XX:CMSFullGCsBeforeCompaction=size 用于执行多少次不压缩的Full GC后，跟着来一次碎片整合，默认为0</li>
+</ol>
+<h4 id="g1garbage-first收集器---大内存收集">G1（Garbage First）收集器 - 大内存收集</h4>
+<p><strong>G1内存模型：</strong>
+将整个Java堆划分为多个大小相等的独立区域（Region），每个Region被标记了E、S、O和H（巨型对象：humongous object，用于容纳大小为标准区域50%或更大的对象）。
+堆分为大约2000个Region，每个Region最小为1Mb，最大为32Mb。
+-XX:G1HeapRegionSize可以设置Region大小。</p>
+<p><strong>Young GC：</strong>
+发生在年轻代的GC算法，一般对象（除了巨型对象）都是在Eden Region中分配内存，当所有Eden Region被耗尽无法申请内存时，就会触发一次Young GC，活跃对象会被拷贝到Survivor Region或者晋升到Old Region。</p>
+<p><strong>Mixed GC：</strong>
+当越来越多的对象晋升到老年代Old Region时，为了避免堆内存被耗尽，虚拟机会触发Mixed GC，除了回收整个Young Region，还会回收一部分的Old Region。</p>
+<p><strong>Remembered Set</strong></p>
+<p>我们之前说过，G1在回收每个Region上的垃圾时，每个Region之间又有相互依赖引用关系，想要做到对全部Region进行扫描清理，那么不得不做一次全堆扫描。这样就降低了垃圾回收的效率。所以HotSpot引入了Remembered Set来专门存储于管理对象的引用依赖关系，这样当每次回收时，只需要根据Remembered Set上面的对应关系找到相对的区域进行清理，这样就可以避免扫描整个堆内存又不会遗漏某一个区域。</p>
+<p><strong>OopMap</strong></p>
+<p>我们都知道在GC之前要做一次GC Roots来查找对象的存活情况，一边在GC时候正确的回收。那么每次GC时候遍历所有的引用是不现实的，那么这之后就引入了OopMap，它里面记录了一些类加载时候的类型与偏移量地址等信息生成一张映射表放在OopMap中。GC开始的时候，就通过OopMap这样的一个映射表知道，在对象内的什么偏移量上是什么类型的数据，而且特定的位置记录下栈和寄存器中哪些位置是引用。</p>
+<p><strong>大致步骤</strong>
+
+  <img src="/post-img/jvmmm/gc-g1.png" alt="img">
+
+
+1.并初始标记（ Initial marking）
+仅仅只是标记一下GC Roots能直接关联到的对象，并且修改TAMS（Next Top at Mark Start）的值，会触发STW，耗时很短
+2.并发标记（Concurrent marking）
+进行GC Roots tracing
+3.最终标记（Remark）
+修正并发标记期间因用户程序继续运作而导致标记产生变动的那一部分对象的标记记录，
+虚拟机将这段时间对象变化记录在线程Remembered Set Logs，在最终阶段需要把Remembered Set Logs的数据合并到Remembered Set中
+4.复制清理（Copying/Cleanup)
+只选择垃圾较多的区域</p>
+
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/post/mysql-share/" data-toggle="tooltip" data-placement="top" title="Mysql索引相关分享">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/post/life20230406/" data-toggle="tooltip" data-placement="top" title="一点感悟">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+
+                
+
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/java" title="java">
+                            java
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/jvm" title="jvm">
+                            jvm
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/life" title="life">
+                            life
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/spring-cloud" title="spring-cloud">
+                            spring-cloud
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/sql" title="sql">
+                            sql
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:xiaozzk@163.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    <li>
+                        <a target="_blank" href="/img/wechat_qrcode.jpg">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/xiaozzk">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://gitee.com/xiaozzk">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-git fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Zhenkun Blog 2023
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>

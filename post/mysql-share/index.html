@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Zhenkun Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://zhenkun.github.io//img/home-backgroupd.jpg">
+    <meta property="twitter:image" content="https://zhenkun.github.io//img/home-backgroupd.jpg" />
+    
+
+    
+    <meta name="title" content="Mysql索引相关分享" />
+    <meta property="og:title" content="Mysql索引相关分享" />
+    <meta property="twitter:title" content="Mysql索引相关分享" />
+    
+
+    
+    <meta name="description" content="本文讲解Mysql索引相关类型、实现及优化相关实战">
+    <meta property="og:description" content="本文讲解Mysql索引相关类型、实现及优化相关实战" />
+    <meta property="twitter:description" content="本文讲解Mysql索引相关类型、实现及优化相关实战" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="朱镇昆, Zhenkun, Zhenkun Blog, 博客, 个人网站, 互联网, Web, 微服务, Microservice">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Mysql索引相关分享 | 镇昆的博客 | Zhenkun Blog</title>
+
+    <link rel="canonical" href="/post/mysql-share/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link href="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@5.15.1/css/all.css" rel="stylesheet" type="text/css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Zhenkun Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/life/">life</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/home-backgroupd.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/sql" title="SQL">
+                            SQL
+                        </a>
+                        
+                    </div>
+                    <h1>Mysql索引相关分享</h1>
+                    <h2 class="subheading">Mysql</h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                Zhenkun
+                             
+                            on 
+                            Wednesday, July 15, 2020
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <h1 id="mysql索引相关分享">Mysql索引相关分享</h1>
+<h2 id="思维导图">思维导图</h2>
+<p>
+  <img src="/post-img/mysql-share/mind.png" alt="mind">
+
+</p>
+<h2 id="mysql索引介绍">Mysql索引介绍</h2>
+<p>官方对索引的定义为：索引（Index）是帮助MySQL高效获取数据的数据结构</p>
+<p>思想：空间换时间</p>
+<p>本质：数据结构</p>
+<p>查询是数据库的最主要功能之一。我们都希望查询速度能尽可能快，因此数据库系统的设计者会从查询算法角度优化</p>
+<p>最基本的查询算法当然是顺序查找（linear search），这种复杂度为O(n)的算法在数据量很大时显然是糟糕的。</p>
+<p>每种查找算法都只能应用于特定数据结构之上，如二分查找要求被检索数据有序，而二叉树查找只能应用于二叉查找树，但数据本身的组织结构不可能完全满足各种数据结构（例如，理论上不可能同时将两列都按顺序进行组织）。所以，在数据之外，数据库系统还维护着满足特定查找算法的数据结构，这些数据结构以某种方式引用（指向）数据，这样就可以在这些数据结构上实现高级查找算法</p>
+<p>优势：1. 提高检索效率，减少IO 2. 降低排序成本（不是所有的索引算法都降低排序成本）</p>
+<p>劣势：1. 空间 2. 降低Insert Update Delete的效率</p>
+<p>
+  <img src="/post-img/mysql-share/index.png" alt="index">
+
+</p>
+<h2 id="mysql引擎介绍">Mysql引擎介绍</h2>
+<table>
+<thead>
+<tr>
+<th><strong>存储引擎</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>MyISAM</strong></td>
+<td>高速引擎，拥有较高的插入，查询速度，但不支持事务</td>
+</tr>
+<tr>
+<td><strong>InnoDB</strong></td>
+<td>5.5版本后MySQL的默认数据库，支持事务和行级锁定，比MyISAM处理速度稍慢</td>
+</tr>
+<tr>
+<td>ISAM</td>
+<td>MyISAM的前身，MySQL5.0以后不再默认安装</td>
+</tr>
+<tr>
+<td>MRG_MyISAM(MERGE)</td>
+<td>将多个表联合成一个表使用，在超大规模数据存储时很有用</td>
+</tr>
+<tr>
+<td>Memory</td>
+<td>内存存储引擎，拥有极高的插入，更新和查询效率。但是会占用和数据量成正比的内存空间。只在内存上保存数据，意味着数据可能会丢失</td>
+</tr>
+<tr>
+<td>Falcon</td>
+<td>一种新的存储引擎，支持事物处理，传言可能是InnoDB的替代者</td>
+</tr>
+<tr>
+<td>Archive</td>
+<td>将数据压缩后进行存储，非常适合存储大量的独立的，作为历史记录的数据，但是只能进行插入和查询操作</td>
+</tr>
+<tr>
+<td>CSV</td>
+<td>CSV 存储引擎是基于 CSV 格式文件存储数据(应用于跨平台的数据交换)</td>
+</tr>
+</tbody>
+</table>
+<p>InnoDB表类型可以看作是对MyISAM的进一步更新产品，它提供了事务、行级锁机制和外键约束的功能。</p>
+<p>InnoDB的表需要更多的内存和存储，它会在主内存中建立其专用的缓冲池用于高速缓冲数据和索引。</p>
+<p>使用InnoDB是最理想的选择：</p>
+<ul>
+<li>更新密集的表：InnoDB存储引擎特别适合处理多重并发的更新请求</li>
+<li>事务：InnoDB存储引擎是支持事务的标准MySQL存储引擎</li>
+<li>自动灾难恢复：与其它存储引擎不同，InnoDB表能够自动从灾难中恢复</li>
+<li>外键约束：MySQL支持外键的存储引擎只有InnoDB</li>
+<li>支持自动增加列AUTO_INCREMENT属性</li>
+</ul>
+<h2 id="innodb索引的方法和方式">Innodb索引的方法和方式</h2>
+<h3 id="hash">Hash</h3>
+<p>
+  <img src="/post-img/mysql-share/hash_index.png" alt="hash_index">
+
+</p>
+<p>Hash索引的底层实现是由Hash表来实现的，非常适合以 key-value 的形式查询，也就是单个key 查询，或者说是等值查询。</p>
+<p>从上面结构可以看出，Hash 索引可以比较方便的提供等值查询的场景,由于是一次定位数据，所以检索效率远高于BTree索引，但是对于范围查询的话，就需要进行全表扫描了。</p>
+<ol>
+<li>Hash索引仅仅能满足“=”,“IN”,“&lt;=&gt;”查询，不能使用范围查询。</li>
+<li>联合索引中，并不支持BTree支持的联合索引的最优前缀，查询条件必须满足全部索引。</li>
+<li>Hash索引无法避免数据的排序操作</li>
+<li>Hash索引任何时候都不能避免表扫描，由于存在Hash冲突即使查到索引还需要比较得到相应结果所以Hash实际查询性能并不一定比Btree高</li>
+</ol>
+<h3 id="btree">Btree</h3>
+<p>
+  <img src="/post-img/mysql-share/btree-index.png" alt="btree-index">
+
+</p>
+<p>3阶的B-Tree：  一个节点上有两个升序排序的关键字（17、35）和三个指向子树根节点的指针（p1、p2、p3），指针存储的是子节点所在磁盘块的地址。  两个关键词划分成的三个范围域对应三个指针指向的子树的数据的范围域。  以根节点为例，关键字为17和35，P1指针指向的子树的数据范围为小于17，P2指针指向的子树的数据范围为17~35，P3指针指向的子树的数据范围为大于35。</p>
+<p>模拟查找关键字29的过程：1. 根据根节点找到磁盘块</p>
+<ol>
+<li>
+<p>读入内存。【磁盘I/O操作第1次】	比较关键字29在区间（17,35），找到磁盘块1的指针P2。</p>
+</li>
+<li>
+<p>根据P2指针找到磁盘块3，读入内存。【磁盘I/O操作第2次】	比较关键字29在区间（26,30），找到磁盘块3的指针P2。</p>
+</li>
+<li>
+<p>根据P2指针找到磁盘块8，读入内存。【磁盘I/O操作第3次】	在磁盘块8中的关键字列表中找到关键字29。</p>
+</li>
+</ol>
+<p>分析上面过程，发现需要3次磁盘I/O操作，和3次内存查找操作。由于内存中的关键字是一个有序表结构，可以利用二分法查找提高效率。而3次磁盘I/O操作是影响整个B-Tree查找效率的决定因素。B-Tree相对于AVLTree缩减了节点个数，使每次磁盘I/O取到内存的数据都发挥了作用，从而提高了查询效率。</p>
+<h3 id="btree-1">Btree+</h3>
+<p>
+  <img src="/post-img/mysql-share/btree&#43;-index.png" alt="btree-index">
+
+</p>
+<p>B+树是对B树的一种变形树，它与B树的差异在于：</p>
+<ol>
+<li>有k个子结点的结点必然有k个关键字；</li>
+<li>非叶结点仅具有索引作用，跟记录有关的信息均存放在叶结点中。</li>
+<li>树的所有叶结点构成一个有序链表，可以按照关键码排序的次序遍历全部记录（提高区间访问的性能）。</li>
+</ol>
+<p>B-Tree相对于平衡二叉树B-Tree中一次检索最多需要h-1次I/O（根节点常驻内存），渐进复杂度为O(h)=O(logdN)。</p>
+<p>B+树相对B-Tree的优势由于B+Tree内节点去掉了data域，因此可以拥有更大的出度，拥有更好的性能。</p>
+<p>一般实际应用中，出度d是非常大的数字，通常超过100，因此h非常小（通常不超过3）。综上所述，用B-Tree作为索引结构效率（外存）是非常高的。</p>
+<h2 id="索引的类型">索引的类型</h2>
+<p>Mysql数据库中的B+树索引可以分为<strong>聚集索引</strong>和<strong>非聚集索</strong>引（辅助索引）</p>
+<p>聚集索引：指索引项的排序方式和表中数据记录排序方式一致的索引（主键），每张表只能有一个聚集索引，聚集索引的叶子节点存储了整个行数据(即:一张表只能有一个聚集索引)。</p>
+<p>非聚集索引：非聚集索引中索引的逻辑顺序与磁盘上行的物理存储顺序不同，一个表中可以拥有多个非聚集索引。叶子节点并不包含行记录的全部数据。叶子节点除了包含键值以外，还存储了一个指向改行数据的聚集索引建的书签。</p>
+<p>对于Innodb聚集索引遵循如下规则:</p>
+<ol>
+<li>如果一个主键被定义了，那么这个主键就是作为聚集索引。</li>
+<li>如果没有主键被定义，那么该表的第一个唯一非空索引被作为聚集索引。</li>
+<li>如果没有主键也没有合适的唯一索引，那么innodb内部会生成一个隐藏的主键作为聚集索引，这个隐藏的主键是一个6个字节的列，该列的值会随着数据的插入自增。</li>
+</ol>
+<h2 id="索引的种类">索引的种类</h2>
+<table>
+<thead>
+<tr>
+<th><strong>索引种类</strong></th>
+<th><strong>添加索引</strong>**(CREATE INDEX OR ALTER TABLE<strong><strong>两种方式</strong></strong>)**</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>普通索引</td>
+<td>CREATE INDEX idx_name ON table_name (col)</td>
+</tr>
+<tr>
+<td>唯一索引</td>
+<td>CREATE UNIQUE INDEX idx_name ON table_name (col)</td>
+</tr>
+<tr>
+<td>主键</td>
+<td>ALTER TABLE table_name ADD PRIMARY KEY (column);</td>
+</tr>
+<tr>
+<td>外键</td>
+<td>略</td>
+</tr>
+<tr>
+<td>组合索引</td>
+<td>ALTER TABLE table_name ADD INDEX index_name (cola,colb);</td>
+</tr>
+<tr>
+<td>全文索引</td>
+<td>ALTER TABLE table_name ADD FULLTEXT INDEX fulltext_article(col);</td>
+</tr>
+</tbody>
+</table>
+<h3 id="explain执行计划">explain执行计划</h3>
+<p>官方文档: <a href="https://dev.mysql.com/doc/refman/8.0/en/explain-output.html">https://dev.mysql.com/doc/refman/8.0/en/explain-output.html</a></p>
+<p>概要描述：</p>
+<p>id:选择标识符</p>
+<p>select_type:表示查询的类型。</p>
+<p>table:输出结果集的表</p>
+<p>partitions:匹配的分区</p>
+<p>type:表示表的连接类型</p>
+<p>possible_keys:表示查询时，可能使用的索引</p>
+<p>key:表示实际使用的索引</p>
+<p>key_len:索引字段的长度</p>
+<p>ref:列与索引的比较</p>
+<p>rows:扫描出的行数(估算的行数)</p>
+<p>filtered:按表条件过滤的行百分比</p>
+<p>Extra:执行情况的描述和说明</p>
+<p>type显示的是访问类型，访问类型表示我是以何种方式去访问我们的数据，最容易想的是全表扫描，直接暴力的遍历一张表去寻找需要的数据，效率非常低下，访问的类型有很多，效率从最好到最坏依次是：system &gt; const &gt; eq_ef &gt; ref &gt; fulltext &gt; ref_or_null &gt; index_merge &gt; unique_subquery &gt; index_subquery &gt; range &gt; index &gt; ALL</p>
+<h2 id="索引优化">索引优化</h2>
+<p>最左前缀原则	最左优先，以最左边的为起点任何连续的索引都能匹配上。同时遇到范围查询(&gt;、&lt;、between、like)就会停止匹配。例如：	b = 2 如果建立(a,b)顺序的索引，是匹配不到(a,b)索引的；但是如果查询条件是a = 1 and b = 2或者a=1(又或者是b = 2 and b = 1)就可以，因为优化器会自动调整a,b的顺序。再比如a = 1 and b = 2 and c &gt; 3 and d = 4 如果建立(a,b,c,d)顺序的索引，d是用不到索引的，因为c字段是一个范围查询，它之后的字段会停止匹配。(实测5.7不会)</p>
+<p>索引覆盖:	只需要在一棵索引树上就能获取SQL所需的所有列数据，无需回表，速度更快。</p>
+<h3 id="索引失效情况">索引失效情况</h3>
+<p>1.有or必全有索引; (5.1 以后引入 ref_merge)</p>
+<p>2.复合索引未用左列字段;</p>
+<p>3.like以%开头;</p>
+<p>4.需要类型转换(包括隐式转换字符转数字会失效，数字转字符不会失效);</p>
+<p>5.where中索引列有 &lsquo;!=&rsquo;  (推荐使用in);</p>
+<p>6.where中索引列使用了函数(如, substring);</p>
+<p>7.加减运算 如 where mobile -1 = ?</p>
+<p>8.如果mysql觉得全表扫描更快时（数据少执行引擎默认优化）;</p>
+
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/post/springcloudconfig/" data-toggle="tooltip" data-placement="top" title="Spring Cloud Config分享">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/post/jvm/" data-toggle="tooltip" data-placement="top" title="JVM相关分享(内存模型/垃圾回收)">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+
+                
+
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/java" title="java">
+                            java
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/jvm" title="jvm">
+                            jvm
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/life" title="life">
+                            life
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/spring-cloud" title="spring-cloud">
+                            spring-cloud
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/sql" title="sql">
+                            sql
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:xiaozzk@163.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    <li>
+                        <a target="_blank" href="/img/wechat_qrcode.jpg">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/xiaozzk">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://gitee.com/xiaozzk">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-git fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Zhenkun Blog 2023
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>

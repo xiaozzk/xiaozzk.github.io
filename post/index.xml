@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Zhenkun Blog</title>
+    <link>https://zhenkun.github.io/post/</link>
+    <description>Recent content in Posts on Zhenkun Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 06 Apr 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://zhenkun.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>一点感悟</title>
+      <link>https://zhenkun.github.io/post/life20230406/</link>
+      <pubDate>Thu, 06 Apr 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://zhenkun.github.io/post/life20230406/</guid>
+      <description>古达，是我上家公司的花名， 也是一场感悟良多的旅途 缘起于杭州 记得第一次到杭州，从下沙走到余杭，兜兜转转又去了转塘的愣头青模样🤣甚是好笑，现在回</description>
+    </item>
+    
+    <item>
+      <title>JVM相关分享(内存模型/垃圾回收)</title>
+      <link>https://zhenkun.github.io/post/jvm/</link>
+      <pubDate>Fri, 04 Jun 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://zhenkun.github.io/post/jvm/</guid>
+      <description>JVM内存模型&amp;amp;垃圾回收 思维导图 什么是JMM(Java内存模型) Java内存模型(Java Memory Model简称JMM)是一种抽象的概念，</description>
+    </item>
+    
+    <item>
+      <title>Mysql索引相关分享</title>
+      <link>https://zhenkun.github.io/post/mysql-share/</link>
+      <pubDate>Wed, 15 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://zhenkun.github.io/post/mysql-share/</guid>
+      <description>Mysql索引相关分享 思维导图 Mysql索引介绍 官方对索引的定义为：索引（Index）是帮助MySQL高效获取数据的数据结构 思想：空间换时间</description>
+    </item>
+    
+    <item>
+      <title>Spring Cloud Config分享</title>
+      <link>https://zhenkun.github.io/post/springcloudconfig/</link>
+      <pubDate>Sun, 01 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://zhenkun.github.io/post/springcloudconfig/</guid>
+      <description>Spring Cloud Config Spring Cloud Config为分布式系统中的外部配置提供服务器和客户端支持，分为Config Server和Config Client两部分，是一个可</description>
+    </item>
+    
+  </channel>
+</rss>
