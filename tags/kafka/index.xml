@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>kafka on Zhenkun Blog</title>
+    <link>https://xiaozzk.github.io/tags/kafka/</link>
+    <description>Recent content in kafka on Zhenkun Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 17 Jun 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://xiaozzk.github.io/tags/kafka/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Kafka客户端使用</title>
+      <link>https://xiaozzk.github.io/post/kafkaclient/</link>
+      <pubDate>Wed, 17 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://xiaozzk.github.io/post/kafkaclient/</guid>
+      <description>kafka-clients &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.apache.kafka&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;kafka-clients&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;${kafka-clients.version}&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; Producer 生产者基础参数 bootstrap.servers 指定生产者客户端连接kafka集群所需的broker地址列表，格式为host1:port1,host2:por</description>
+    </item>
+    
+  </channel>
+</rss>

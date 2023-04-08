@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>docker on Zhenkun Blog</title>
+    <link>https://xiaozzk.github.io/tags/docker/</link>
+    <description>Recent content in docker on Zhenkun Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 26 May 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://xiaozzk.github.io/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Rancher &#43; k3s 部署SpringCloud应用</title>
+      <link>https://xiaozzk.github.io/post/k8srancher/</link>
+      <pubDate>Wed, 26 May 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://xiaozzk.github.io/post/k8srancher/</guid>
+      <description>Rancher + k3s 部署SpringCloud应用 Rancher简介 Rancher是一个开源的企业级容器管理平台。通过Rancher，企业再也不必自己使用</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Zhenkun Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://xiaozzk.github.io/img/home-backgroupd.jpg">
+    <meta property="twitter:image" content="https://xiaozzk.github.io/img/home-backgroupd.jpg" />
+    
+
+    
+    <meta name="title" content="Rancher &#43; k3s 部署SpringCloud应用" />
+    <meta property="og:title" content="Rancher &#43; k3s 部署SpringCloud应用" />
+    <meta property="twitter:title" content="Rancher &#43; k3s 部署SpringCloud应用" />
+    
+
+    
+    <meta name="description" content="Rancher &#43; k3s 部署SpringCloud应用">
+    <meta property="og:description" content="Rancher &#43; k3s 部署SpringCloud应用" />
+    <meta property="twitter:description" content="Rancher &#43; k3s 部署SpringCloud应用" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="朱镇昆, Zhenkun, Zhenkun Blog, 博客, 个人网站, 互联网, Web, 微服务, Microservice">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Rancher &#43; k3s 部署SpringCloud应用 | 镇昆的博客 | Zhenkun Blog</title>
+
+    <link rel="canonical" href="/post/k8srancher/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link href="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@5.15.1/css/all.css" rel="stylesheet" type="text/css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Zhenkun Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/life/">life</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/home-backgroupd.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/k8s" title="k8s">
+                            k8s
+                        </a>
+                        
+                        <a class="tag" href="/tags/docker" title="docker">
+                            docker
+                        </a>
+                        
+                    </div>
+                    <h1>Rancher &#43; k3s 部署SpringCloud应用</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                Zhenkun
+                             
+                            on 
+                            Wednesday, May 26, 2021
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <h1 id="rancher--k3s-部署springcloud应用">Rancher + k3s 部署SpringCloud应用</h1>
+<h2 id="rancher简介">Rancher简介</h2>
+<p>Rancher是一个开源的企业级容器管理平台。通过Rancher，企业再也不必自己使用一系列的开源软件去从头搭建容器服务平台。Rancher提供了在生产环境中使用的管理Docker和Kubernetes的全栈化容器部署与管理平台。</p>
+<p>Rancher提供四大基本功能: <em><strong>基础编排</strong></em> , <em><strong>容器编排与调度</strong></em>,<em><strong>应用商店</strong></em>,<em><strong>企业级权限管理</strong></em></p>
+<p>安装方式有两种: 1.字节码 2.Docker</p>
+<p>本文只介绍Docker方式安装:</p>
+<p><a href="https://blog.csdn.net/ct_666/article/details/110818135">https://blog.csdn.net/ct_666/article/details/110818135</a> 网络资料</p>
+<p><a href="https://github.com/rancher/rancher#installation">https://github.com/rancher/rancher#installation</a> 官方文档</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#6272a4">##  2.13 2.14  -v2.5</span>
+</span></span><span style="display:flex;"><span>docker pull rancher/rancher:stable
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>sudo docker run --privileged -d --restart<span style="color:#ff79c6">=</span>unless-stopped -p 12080:80 -p 12443:443 rancher/rancher:stable
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">## 安装k3s https://blog.csdn.net/qingdao666666/article/details/104712338/</span>
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">## 加入节点</span>
+</span></span><span style="display:flex;"><span>curl --insecure http://192.168.20.131:12080/v3/import/l65jdnrc86lm82qk24v9lbgqstx4ltnpm9cwf9k6npgwktgnk5lq7j_c-dgktg.yaml | kubectl apply -f -
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">## 配置私有仓库</span>
+</span></span><span style="display:flex;"><span>cat &gt;&gt; /etc/rancher/k3s/registries.yaml <span style="color:#f1fa8c">&lt;&lt;EOF
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">mirrors:
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">  &#34;192.168.20.1&#34;:
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">    endpoint:
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">      - &#34;https://192.168.20.1:18081&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">EOF</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>systemctl restart k3s
+</span></span></code></pre></div><h2 id="k8s基本概念">K8s基本概念</h2>
+<p>核心架构图</p>
+<p>
+  <img src="/post-img/rancherk8s/k8sframework.jpg" alt="images">
+
+</p>
+<h3 id="节点node">节点（Node）</h3>
+<p>Kubernetes 集群中的计算能力由 Node 提供，Kubernetes 集群中的 Node 是所有 Pod 运行所在的工作主机，可以是物理机也可以是虚拟机。工作主机的统一特征是上面要运行 Kubelet 管理节点上运行的容器。</p>
+<h3 id="命名空间namespace">命名空间（Namespace）</h3>
+<p>命名空间为 Kubernetes 集群提供虚拟的隔离作用。Kubernetes 集群初始有 3 个命名空间，分别是默认命名空间 default、系统命名空间 kube-system 和 kube-public ，除此以外，管理员可以创建新的命名空间以满足需求。</p>
+<h3 id="pod">Pod</h3>
+<p>Pod是 Kubernetes 部署应用或服务的最小的基本单位。一个Pod 封装多个应用容器（也可以只有一个容器）、存储资源、一个独立的网络 IP 以及管理控制容器运行方式的策略选项。</p>
+<h3 id="部署deployment">部署（Deployment）</h3>
+<p>部署表示用户对 Kubernetes 集群的一次更新操作。可以是创建一个新的服务，更新一个新的服务，也可以是滚动升级一个服务。滚动升级一个服务，实际是创建一个新的 RS，然后逐渐将新 RS 中副本数增加到理想状态，将旧 RS 中的副本数减小到 0 的复合操作；这样一个复合操作用一个RS是不太好描述的，所以用一个更通用的 Deployment 来描述。不建议您手动管理利用 Deployment 创建的 RS。</p>
+<h4 id="副本集replica-setrs">副本集（Replica Set，RS）</h4>
+<h3 id="服务service">服务（Service）</h3>
+<p>Service 也是 Kubernetes 的基本操作单元，是真实应用服务的抽象，每一个服务后面都有很多对应的容器来提供支持，通过 Kube-Proxy 的 port 和服务 selector 决定服务请求传递给后端的容器，对外表现为一个单一访问接口，外部不需要了解后端如何运行，这给扩展或维护后端带来很大的好处。</p>
+<h3 id="标签labels">标签（labels）</h3>
+<p>Labels 的实质是附着在资源对象上的一系列 Key/Value 键值对，用于指定对用户有意义的对象的属性，标签对内核系统是没有直接意义的。标签可以在创建一个对象的时候直接赋予，也可以在后期随时修改，每一个对象可以拥有多个标签，但 key 值必须唯一。</p>
+<h3 id="存储卷volume">存储卷（Volume）</h3>
+<p>Kubernetes 集群中的存储卷跟 Docker 的存储卷有些类似，只不过 Docker 的存储卷作用范围为一个容器，而 Kubernetes 的存储卷的生命周期和作用范围是一个 Pod。每个 Pod 中声明的存储卷由 Pod 中的所有容器共享。支持使用 Persistent Volume Claim 即 PVC 这种逻辑存储，使用者可以忽略后台的实际存储技术，具体关于 Persistent Volumn(pv)的配置由存储管理员来配置。</p>
+<h3 id="持久存储卷persistent-volumepv和持久存储卷声明persistent-volume-claimpvc">持久存储卷（Persistent Volume，PV）和持久存储卷声明（Persistent Volume Claim，PVC）</h3>
+<p>PV 和 PVC 使得 Kubernetes 集群具备了存储的逻辑抽象能力，使得在配置 Pod 的逻辑里可以忽略对实际后台存储技术的配置，而把这项配置的工作交给 PV 的配置者。存储的 PV 和 PVC 的这种关系，跟计算的 Node 和 Pod 的关系是非常类似的；PV 和 Node 是资源的提供者，根据集群的基础设施变化而变化，由 Kubernetes 集群管理员配置；而 PVC 和 Pod是资源的使用者，根据业务服务的需求变化而变化，由 Kubernetes 集群的使用者即服务的管理员来配置。</p>
+<h3 id="ingress">Ingress</h3>
+<p>Ingress 是授权入站连接到达集群服务的规则集合。你可以通过 Ingress 配置提供外部可访问的 URL、负载均衡、SSL、基于名称的虚拟主机等。用户通过 POST Ingress 资源到 API server 的方式来请求 Ingress。 Ingress controller 负责实现 Ingress，通常使用负载均衡器，它还可以配置边界路由和其他前端。</p>
+<h2 id="实战">实战</h2>
+<p>K8s常用部署类型</p>
+<p><em><strong>DaemonSets:</strong></em> node运行同一个pod，使用DaemonSet使用场景日志收集, 节点监控, 负载</p>
+<p><em><strong>Deployments</strong></em>: 无状态部署, 最常用的方式</p>
+<p><em><strong>StatefulSets</strong></em>: 有状态的部署, 常用于注册中心, 搭建集群等</p>
+<p>K8s暴露端口的几种方式:</p>
+<p><em><strong>ClusterIp</strong></em>: 集群内部私有IP, 通过CoreDNS解析Pod, 可通过ClusterIp或者ServiceName访问</p>
+<p><em><strong>NodePort</strong></em>: 暴露k8s节点端口, 要求port: 30000-32000</p>
+<p><em><strong>Headless</strong></em>: DNS会返回真实Endpoint(ClusterIp)</p>
+<p><em><strong>Ingress</strong></em>: 通过4层或者7层负载请求</p>
+<p><em><strong>LoalBlance</strong></em>: 由云服务厂商提供</p>
+<h3 id="eureak">Eureak</h3>
+<p>Dockerfile</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span><span style="color:#ff79c6">FROM</span><span style="color:#f1fa8c"> openjdk:8</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">LABEL</span> <span style="color:#8be9fd;font-style:italic">maintainer</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;xiaozzk&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">RUN</span> mkdir /home/app
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">COPY</span> target/*.jar /home/app
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">WORKDIR</span><span style="color:#f1fa8c"> /home/app</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">ENV</span> <span style="color:#8be9fd;font-style:italic">JVM_ARGS</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;-Xms64m -Xmx128m&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">ENV</span> <span style="color:#8be9fd;font-style:italic">DISCOVERY_URI</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">ENV</span> <span style="color:#8be9fd;font-style:italic">EUREKA_INSTANCE_HOSTNAME</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">EXPOSE</span><span style="color:#f1fa8c"> 8761</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">## 因为在k8s内部访问通过Headliess暴露端口,未防止serviceUrl与hotsname不符合导致副本失败需手动指定hotsname</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">ENTRYPOINT</span> java -server -Dfile.encoding<span style="color:#ff79c6">=</span>UTF-8 -Djava.security.egd<span style="color:#ff79c6">=</span>file:/dev/./urandom <span style="color:#8be9fd;font-style:italic">$JVM_ARGS</span> -jar *.jar --DISCOVERY_URI<span style="color:#ff79c6">=</span><span style="color:#8be9fd;font-style:italic">$DISCOVERY_URI</span> --EUREKA_INSTANCE_HOSTNAME<span style="color:#ff79c6">=</span><span style="color:#8be9fd;font-style:italic">$EUREKA_INSTANCE_HOSTNAME</span>
+</span></span></code></pre></div><p>部署方式采用Deploment, 暴露方式NodePort</p>
+<h3 id="admin">Admin</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span><span style="color:#ff79c6">FROM</span><span style="color:#f1fa8c"> openjdk:8</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">LABEL</span> <span style="color:#8be9fd;font-style:italic">maintainer</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;xiaozzk&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">RUN</span> mkdir /home/app
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">COPY</span> target/*.jar /home/app
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">WORKDIR</span><span style="color:#f1fa8c"> /home/app</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">ENV</span> <span style="color:#8be9fd;font-style:italic">JVM_ARGS</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;-Xms64m -Xmx128m&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">ENV</span> <span style="color:#8be9fd;font-style:italic">CMD_LINES</span> <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">ENV</span> <span style="color:#8be9fd;font-style:italic">DISCOVERY_URI</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">ENV</span> <span style="color:#8be9fd;font-style:italic">EUREKA_INSTANCE_HOSTNAME</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">EXPOSE</span><span style="color:#f1fa8c"> 8080</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">ENTRYPOINT</span> java -server -Dfile.encoding<span style="color:#ff79c6">=</span>UTF-8 -Djava.security.egd<span style="color:#ff79c6">=</span>file:/dev/./urandom <span style="color:#8be9fd;font-style:italic">$JVM_ARGS</span> -jar *.jar --DISCOVERY_URI<span style="color:#ff79c6">=</span><span style="color:#8be9fd;font-style:italic">$DISCOVERY_URI</span>
+</span></span></code></pre></div><p>部署方式采用Deploments, 暴露方式NodePort</p>
+<h3 id="producer">Producer</h3>
+<p>Dockerfile略</p>
+<p>部署方式采用Deploments, 暴露方式ClusterIp</p>
+<h3 id="consumer">Consumer</h3>
+<p>Dockerfile略</p>
+<p>部署方式采用Deploments, 暴露方式ClusterIp</p>
+<h3 id="gateway">Gateway</h3>
+<p>Dockerfile略</p>
+<p>部署方式采用DaemonSets, 暴露方式ClusterIp</p>
+<h3 id="go-web">GO-WEB</h3>
+<p>Dockerfile略</p>
+<p>部署方式Deploments, 暴露方式ClusterIp 通过服务名调用Consumer</p>
+<h2 id="附录">附录</h2>
+<p>Simple 无状态服务部署文件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">apiVersion</span>: apps/v1
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">kind</span>: Deployment
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">name</span>: hello-server-deployement
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">labels</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">name</span>: hello-server
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">replicas</span>: <span style="color:#bd93f9">2</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">selector</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">matchLabels</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">app</span>: hello-server
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">template</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">metadata</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">labels</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">app</span>: hello-server
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">spec</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">containers</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ff79c6">name</span>: hello-server
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">image</span>: <span style="color:#bd93f9">192.168.20.1</span>:<span style="color:#bd93f9">18081</span>/hello-server:v1.1
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">ports</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#ff79c6">containerPort</span>: <span style="color:#bd93f9">5000</span>
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">apiVersion</span>: v1
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">kind</span>: Service
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">name</span>: hello-server-service
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">labels</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">name</span>: hello-server
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">type</span>: NodePort
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">ports</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#ff79c6">port</span>: <span style="color:#bd93f9">5000</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">targetPort</span>: <span style="color:#bd93f9">5000</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">protocol</span>: TCP
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">selector</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">app</span>: hello-server
+</span></span></code></pre></div><p>k8s Deployment standard.yml</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">apiVersion</span>: v1 <span style="color:#6272a4">#指定api版本，此值必须在kubectl apiversion中   </span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">kind</span>: Pod <span style="color:#6272a4">#指定创建资源的角色/类型   </span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">metadata</span>: <span style="color:#6272a4">#资源的元数据/属性   </span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">name</span>: test-pod <span style="color:#6272a4">#资源的名字，在同一个namespace中必须唯一   </span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">labels</span>: <span style="color:#6272a4">#设定资源的标签 </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">k8s-app</span>: apache   
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">version</span>: v1   
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">kubernetes.io/cluster-service</span>: <span style="color:#f1fa8c">&#34;true&#34;</span>   
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">annotations</span>:            <span style="color:#6272a4">#自定义注解列表   </span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: String        <span style="color:#6272a4">#自定义注解名字   </span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">spec</span>: <span style="color:#6272a4">#specification of the resource content 指定该资源的内容   </span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">restartPolicy</span>: Always <span style="color:#6272a4">#表明该容器一直运行，默认k8s的策略，在此容器退出后，会立即创建一个相同的容器   </span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">nodeSelector</span>:     <span style="color:#6272a4">#节点选择，先给主机打标签kubectl label nodes kube-node1 zone=node1   </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">zone</span>: node1   
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">containers</span>:   
+</span></span><span style="display:flex;"><span>  - <span style="color:#ff79c6">name</span>: test-pod <span style="color:#6272a4">#容器的名字   </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">image</span>: <span style="color:#bd93f9">10.192.21.18</span>:<span style="color:#bd93f9">5000</span>/test/chat:latest <span style="color:#6272a4">#容器使用的镜像地址   </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">imagePullPolicy</span>: Never <span style="color:#6272a4">#三个选择Always、Never、IfNotPresent，每次启动时检查和更新（从registery）images的策略， </span>
+</span></span><span style="display:flex;"><span>                           <span style="color:#6272a4"># Always，每次都检查 </span>
+</span></span><span style="display:flex;"><span>                           <span style="color:#6272a4"># Never，每次都不检查（不管本地是否有） </span>
+</span></span><span style="display:flex;"><span>                           <span style="color:#6272a4"># IfNotPresent，如果本地有就不检查，如果没有就拉取 </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">command</span>: [<span style="color:#f1fa8c">&#39;sh&#39;</span>] <span style="color:#6272a4">#启动容器的运行命令，将覆盖容器中的Entrypoint,对应Dockefile中的ENTRYPOINT   </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">args</span>: [<span style="color:#f1fa8c">&#34;$(str)&#34;</span>] <span style="color:#6272a4">#启动容器的命令参数，对应Dockerfile中CMD参数   </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">env</span>: <span style="color:#6272a4">#指定容器中的环境变量   </span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: str <span style="color:#6272a4">#变量的名字   </span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">value</span>: <span style="color:#f1fa8c">&#34;/etc/run.sh&#34;</span> <span style="color:#6272a4">#变量的值   </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">resources</span>: <span style="color:#6272a4">#资源管理 </span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">requests</span>: <span style="color:#6272a4">#容器运行时，最低资源需求，也就是说最少需要多少资源容器才能正常运行   </span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">cpu</span>: <span style="color:#bd93f9">0.1</span> <span style="color:#6272a4">#CPU资源（核数），两种方式，浮点数或者是整数+m，0.1=100m，最少值为0.001核（1m） </span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">memory</span>: 32Mi <span style="color:#6272a4">#内存使用量   </span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">limits</span>: <span style="color:#6272a4">#资源限制   </span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">cpu</span>: <span style="color:#bd93f9">0.5</span>   
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">memory</span>: 1000Mi   
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">ports</span>:   
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">containerPort</span>: <span style="color:#bd93f9">80</span> <span style="color:#6272a4">#容器开发对外的端口 </span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">name</span>: httpd  <span style="color:#6272a4">#名称 </span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">protocol</span>: TCP   
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">livenessProbe</span>: <span style="color:#6272a4">#pod内容器健康检查的设置 </span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">httpGet</span>: <span style="color:#6272a4">#通过httpget检查健康，返回200-399之间，则认为容器正常   </span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">path</span>: / <span style="color:#6272a4">#URI地址   </span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">port</span>: <span style="color:#bd93f9">80</span>   
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">#host: 127.0.0.1 #主机地址   </span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">scheme</span>: HTTP   
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">initialDelaySeconds</span>: <span style="color:#bd93f9">180</span> <span style="color:#6272a4">#表明第一次检测在容器启动后多长时间后开始   </span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">timeoutSeconds</span>: <span style="color:#bd93f9">5</span> <span style="color:#6272a4">#检测的超时时间   </span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">periodSeconds</span>: <span style="color:#bd93f9">15</span>  <span style="color:#6272a4">#检查间隔时间   </span>
+</span></span><span style="display:flex;"><span>      <span style="color:#6272a4">#也可以用这种方法   </span>
+</span></span><span style="display:flex;"><span>      <span style="color:#6272a4">#exec: 执行命令的方法进行监测，如果其退出码不为0，则认为容器正常   </span>
+</span></span><span style="display:flex;"><span>      <span style="color:#6272a4">#  command:   </span>
+</span></span><span style="display:flex;"><span>      <span style="color:#6272a4">#    - cat   </span>
+</span></span><span style="display:flex;"><span>      <span style="color:#6272a4">#    - /tmp/health   </span>
+</span></span><span style="display:flex;"><span>      <span style="color:#6272a4">#也可以用这种方法   </span>
+</span></span><span style="display:flex;"><span>      <span style="color:#6272a4">#tcpSocket: //通过tcpSocket检查健康    </span>
+</span></span><span style="display:flex;"><span>      <span style="color:#6272a4">#  port: number    </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">lifecycle</span>: <span style="color:#6272a4">#生命周期管理   </span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">postStart</span>: <span style="color:#6272a4">#容器运行之前运行的任务   </span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">exec</span>:   
+</span></span><span style="display:flex;"><span>          <span style="color:#ff79c6">command</span>:   
+</span></span><span style="display:flex;"><span>            - <span style="color:#f1fa8c">&#39;sh&#39;</span>   
+</span></span><span style="display:flex;"><span>            - <span style="color:#f1fa8c">&#39;yum upgrade -y&#39;</span>   
+</span></span><span style="display:flex;"><span>      preStop:#容器关闭之前运行的任务   
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">exec</span>:   
+</span></span><span style="display:flex;"><span>          <span style="color:#ff79c6">command</span>: [<span style="color:#f1fa8c">&#39;service httpd stop&#39;</span>]   
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">volumeMounts</span>:  <span style="color:#6272a4">#挂载持久存储卷 </span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ff79c6">name</span>: volume <span style="color:#6272a4">#挂载设备的名字，与volumes[*].name 需要对应     </span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">mountPath</span>: /data <span style="color:#6272a4">#挂载到容器的某个路径下   </span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">readOnly</span>: <span style="color:#ff79c6">True</span>   
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">volumes</span>: <span style="color:#6272a4">#定义一组挂载设备   </span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ff79c6">name</span>: volume <span style="color:#6272a4">#定义一个挂载设备的名字   </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">#meptyDir: {}   </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">hostPath</span>:   
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">path</span>: /opt <span style="color:#6272a4">#挂载设备类型为hostPath，路径为宿主机下的/opt,这里设备类型支持很多种 </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">#nfs</span>
+</span></span></code></pre></div>
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/post/mysql-share/" data-toggle="tooltip" data-placement="top" title="Mysql索引相关分享">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/post/jvm/" data-toggle="tooltip" data-placement="top" title="JVM相关分享(内存模型/垃圾回收)">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+
+                
+
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/docker" title="docker">
+                            docker
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/java" title="java">
+                            java
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/jvm" title="jvm">
+                            jvm
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/k8s" title="k8s">
+                            k8s
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/kafka" title="kafka">
+                            kafka
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/life" title="life">
+                            life
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/spring-boot" title="spring-boot">
+                            spring-boot
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/spring-cloud" title="spring-cloud">
+                            spring-cloud
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/sql" title="sql">
+                            sql
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:xiaozzk@163.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    <li>
+                        <a target="_blank" href="/img/wechat_qrcode.jpg">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/xiaozzk">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://gitee.com/xiaozzk">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-git fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Zhenkun Blog 2023
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>

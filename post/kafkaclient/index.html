@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Zhenkun Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://xiaozzk.github.io/img/home-backgroupd.jpg">
+    <meta property="twitter:image" content="https://xiaozzk.github.io/img/home-backgroupd.jpg" />
+    
+
+    
+    <meta name="title" content="Kafka客户端使用" />
+    <meta property="og:title" content="Kafka客户端使用" />
+    <meta property="twitter:title" content="Kafka客户端使用" />
+    
+
+    
+    <meta name="description" content="Kafka客户端使用">
+    <meta property="og:description" content="Kafka客户端使用" />
+    <meta property="twitter:description" content="Kafka客户端使用" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="朱镇昆, Zhenkun, Zhenkun Blog, 博客, 个人网站, 互联网, Web, 微服务, Microservice">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Kafka客户端使用 | 镇昆的博客 | Zhenkun Blog</title>
+
+    <link rel="canonical" href="/post/kafkaclient/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link href="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@5.15.1/css/all.css" rel="stylesheet" type="text/css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Zhenkun Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/life/">life</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/home-backgroupd.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/kafka" title="kafka">
+                            kafka
+                        </a>
+                        
+                    </div>
+                    <h1>Kafka客户端使用</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                Zhenkun
+                             
+                            on 
+                            Wednesday, June 17, 2020
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <h1 id="kafka-clients">kafka-clients</h1>
+<pre tabindex="0"><code class="language-markup" data-lang="markup">&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.kafka&lt;/groupId&gt;
+  &lt;artifactId&gt;kafka-clients&lt;/artifactId&gt;
+  &lt;version&gt;${kafka-clients.version}&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre><h2 id="producer">Producer</h2>
+<h3 id="生产者基础参数">生产者基础参数</h3>
+<p><strong>bootstrap.servers</strong></p>
+<pre tabindex="0"><code>指定生产者客户端连接kafka集群所需的broker地址列表，格式为host1:port1,host2:port2，可以设置一个或多个
+</code></pre><p><strong>key.serializer</strong></p>
+<pre tabindex="0"><code>broker接收消息必须以字节数组byte[]形式存在，KafkaProducer&lt;K,V&gt;和ProducerRecord&lt;K,V&gt;中的泛型就是key和value的类型
+可以使用kafka自带的序列化工具
+org.apache.kafka.common.serialization.StringSerializer
+</code></pre><p><strong>value.seriablizer</strong></p>
+<pre tabindex="0"><code>broker接收消息必须以字节数组byte[]形式存在，KafkaProducer&lt;K,V&gt;和ProducerRecord&lt;K,V&gt;中的泛型就是key和value的类型
+可以使用kafka自带的序列化工具
+org.apache.kafka.common.serialization.StringSerializer
+</code></pre><h3 id="生产者核心参数">生产者核心参数</h3>
+<p><strong>acks</strong></p>
+<pre tabindex="0"><code>0：producer不等待broker的ack，这一操作提供了一个最低的延迟，broker一接收到还没有写入磁盘就已经返回，当 broker故障时有可能丢失数据；
+1：producer等待broker的ack，分区的leader落盘成功后返回ack，如果在follower同步成功之前leader故障，那么将会丢失数据；
+-1（all）：producer等待broker的ack，分区的leader和follower全部落盘成功后才返回ack。但是如果在follower同步完成后，broker发送ack之前，leader发生故障，那么会造成数据重复。
+</code></pre><p><strong>max.request.size</strong></p>
+<pre tabindex="0"><code>用来限制生产者客户端能发送的消息的最大值，默认值为1048576B，即1MB，一般不建议改
+</code></pre><p><strong>retries</strong></p>
+<pre tabindex="0"><code>生产者重试次数，默认值0
+</code></pre><p><strong>buffer.memory</strong></p>
+<pre tabindex="0"><code>生产端消息缓冲池或缓冲区的大小，默认值 32 * 1024 * 1024L
+</code></pre><p><strong>batch.size</strong></p>
+<pre tabindex="0"><code>发送到缓冲区中的消息会被分为一个一个的batch，分批次的发送到broker端，这个参数就表示batch批次大小，默认值为16384，即16KB。因此减小batch大小有利于降低消息延时，增加batch大小有利于提升吞吐量。
+</code></pre><p><strong>linger.ms</strong></p>
+<pre tabindex="0"><code>用来控制batch最大的空闲时间，超过该时间的batch也会被发送到broker端
+</code></pre><p><strong>request.timeout.ms</strong></p>
+<pre tabindex="0"><code>表示生产端发送请求后等待broker端响应的最长时间，默认值为30000，即30s，超时生产端可能会选择重试（如果配置了retries）
+</code></pre><h2 id="consumer">Consumer</h2>
+<h3 id="消费者基础参数">消费者基础参数</h3>
+<p><strong>bootstrap.servers</strong></p>
+<p>参考生产者</p>
+<p><strong>key.deserializer</strong></p>
+<p><strong>value.deserializer</strong></p>
+<h3 id="消费者核心参数">消费者核心参数</h3>
+<p><strong>group.id</strong></p>
+<pre tabindex="0"><code>组id,标识一个consumer组的名称
+</code></pre><p><strong>enable.auto.commit</strong></p>
+<pre tabindex="0"><code>boolean 类型，配置是否开启自动提交消费位移的功能，默认开启
+</code></pre><p><strong>auto.commit.interval.ms</strong></p>
+<pre tabindex="0"><code>当enbale.auto.commit参数设置为 true 时才生效，表示开启自动提交消费位移功能时自动提交`消费位移`的时间间隔
+</code></pre><p><strong>auto.offset.reset</strong></p>
+<pre tabindex="0"><code>当消费者读取偏移量无效的情况下，需要重置消费起始位置，可选值：&#34;latest&#34;, &#34;earliest&#34;, &#34;none&#34;
+latest: 从消费者启动后生成的记录 （默认值）
+earliest: 将从有效的最小位移位置开始消费
+</code></pre><p><strong>max.poll.records</strong></p>
+<pre tabindex="0"><code>消费者每次poll最大数据量，默认500
+</code></pre><h3 id="消费者消息手动提交">消费者消息手动提交</h3>
+<p><strong>手动提交-sync</strong></p>
+<pre tabindex="0"><code>-- 同步提交，当前线程会阻塞直到offset提交成功
+org.apache.kafka.clients.consumer.KafkaConsumer#commitSync()
+</code></pre><p><strong>手动提交-async</strong></p>
+<pre tabindex="0"><code>-- 异步没有失败重试机制，故有可能提交失败
+org.apache.kafka.clients.consumer.KafkaConsumer#commitAsync()
+</code></pre><h2 id="kafka-springboot">kafka-springboot</h2>
+<pre tabindex="0"><code class="language-markup" data-lang="markup">    &lt;dependency&gt;
+      &lt;groupId&gt;org.springframework.kafka&lt;/groupId&gt;
+      &lt;artifactId&gt;spring-kafka&lt;/artifactId&gt;
+      &lt;version&gt;${spring-kafka.version}&lt;/version&gt;
+    &lt;/dependency&gt;
+</code></pre><p>配置文件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#ff79c6">spring</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">kafka</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">bootstrap-servers</span>: <span style="color:#bd93f9">127.0.0.1</span>:<span style="color:#bd93f9">9092</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># 生产者配置</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">producer</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">retries</span>: <span style="color:#bd93f9">3</span> <span style="color:#6272a4"># 设置大于0的值，则客户端会将发送失败的记录重新发送</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">batch-size</span>: <span style="color:#bd93f9">16384</span> <span style="color:#6272a4">#16K</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">buffer-memory</span>: <span style="color:#bd93f9">33554432</span> <span style="color:#6272a4">#32M</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">acks</span>: all
+</span></span><span style="display:flex;"><span>      <span style="color:#6272a4"># 指定消息key和消息体的编解码方式</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">key-serializer</span>: org.apache.kafka.common.serialization.StringSerializer
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">value-serializer</span>: org.apache.kafka.common.serialization.StringSerializer
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># 消费者配置</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">consumer</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">group-id</span>: springboot-gid-001
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">enable-auto-commit</span>: <span style="color:#ff79c6">true</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">auto-offset-reset</span>: earliest
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">key-deserializer</span>: org.apache.kafka.common.serialization.StringDeserializer
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">value-deserializer</span>: org.apache.kafka.common.serialization.StringDeserializer
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">listener</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">concurrency</span>: <span style="color:#bd93f9">3</span>
+</span></span></code></pre></div>
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/post/springcloudconfig/" data-toggle="tooltip" data-placement="top" title="Spring Cloud Config分享">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/post/mysql-share/" data-toggle="tooltip" data-placement="top" title="Mysql索引相关分享">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+
+                
+
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/docker" title="docker">
+                            docker
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/java" title="java">
+                            java
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/jvm" title="jvm">
+                            jvm
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/k8s" title="k8s">
+                            k8s
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/kafka" title="kafka">
+                            kafka
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/life" title="life">
+                            life
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/spring-boot" title="spring-boot">
+                            spring-boot
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/spring-cloud" title="spring-cloud">
+                            spring-cloud
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/sql" title="sql">
+                            sql
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:xiaozzk@163.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    <li>
+                        <a target="_blank" href="/img/wechat_qrcode.jpg">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/xiaozzk">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://gitee.com/xiaozzk">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-git fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Zhenkun Blog 2023
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>

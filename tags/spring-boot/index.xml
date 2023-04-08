@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>spring boot on Zhenkun Blog</title>
+    <link>https://xiaozzk.github.io/tags/spring-boot/</link>
+    <description>Recent content in spring boot on Zhenkun Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 04 Jun 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://xiaozzk.github.io/tags/spring-boot/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>SpringBoot AutoConfiguration源码解析</title>
+      <link>https://xiaozzk.github.io/post/springcloudautoconfiguration/</link>
+      <pubDate>Tue, 04 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://xiaozzk.github.io/post/springcloudautoconfiguration/</guid>
+      <description>1.Springboot 启动注解分析 springboot启动类 //SpringBootApplication注解用来标注一个主程序类，说明是一个springboo</description>
+    </item>
+    
+  </channel>
+</rss>
