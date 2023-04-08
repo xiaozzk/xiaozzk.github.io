@@ -16,5 +16,14 @@
       <description>JVM内存模型&amp;amp;垃圾回收 思维导图 什么是JMM(Java内存模型) Java内存模型(Java Memory Model简称JMM)是一种抽象的概念，</description>
     </item>
     
+    <item>
+      <title>SpringBoot AutoConfiguration源码解析</title>
+      <link>https://xiaozzk.github.io/post/springcloudautoconfiguration/</link>
+      <pubDate>Tue, 04 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://xiaozzk.github.io/post/springcloudautoconfiguration/</guid>
+      <description>1.Springboot 启动注解分析 springboot启动类 //SpringBootApplication注解用来标注一个主程序类，说明是一个springboo</description>
+    </item>
+    
   </channel>
 </rss>

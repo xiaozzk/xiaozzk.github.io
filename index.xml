@@ -26,6 +26,15 @@
     </item>
     
     <item>
+      <title>Rancher &#43; k3s 部署SpringCloud应用</title>
+      <link>https://xiaozzk.github.io/post/k8srancher/</link>
+      <pubDate>Wed, 26 May 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://xiaozzk.github.io/post/k8srancher/</guid>
+      <description>Rancher + k3s 部署SpringCloud应用 Rancher简介 Rancher是一个开源的企业级容器管理平台。通过Rancher，企业再也不必自己使用</description>
+    </item>
+    
+    <item>
       <title>Mysql索引相关分享</title>
       <link>https://xiaozzk.github.io/post/mysql-share/</link>
       <pubDate>Wed, 15 Jul 2020 00:00:00 +0000</pubDate>
@@ -35,12 +44,30 @@
     </item>
     
     <item>
+      <title>Kafka客户端使用</title>
+      <link>https://xiaozzk.github.io/post/kafkaclient/</link>
+      <pubDate>Wed, 17 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://xiaozzk.github.io/post/kafkaclient/</guid>
+      <description>kafka-clients &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.apache.kafka&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;kafka-clients&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;${kafka-clients.version}&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; Producer 生产者基础参数 bootstrap.servers 指定生产者客户端连接kafka集群所需的broker地址列表，格式为host1:port1,host2:por</description>
+    </item>
+    
+    <item>
       <title>Spring Cloud Config分享</title>
       <link>https://xiaozzk.github.io/post/springcloudconfig/</link>
       <pubDate>Sun, 01 Dec 2019 00:00:00 +0000</pubDate>
       
       <guid>https://xiaozzk.github.io/post/springcloudconfig/</guid>
       <description>Spring Cloud Config Spring Cloud Config为分布式系统中的外部配置提供服务器和客户端支持，分为Config Server和Config Client两部分，是一个可</description>
+    </item>
+    
+    <item>
+      <title>SpringBoot AutoConfiguration源码解析</title>
+      <link>https://xiaozzk.github.io/post/springcloudautoconfiguration/</link>
+      <pubDate>Tue, 04 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://xiaozzk.github.io/post/springcloudautoconfiguration/</guid>
+      <description>1.Springboot 启动注解分析 springboot启动类 //SpringBootApplication注解用来标注一个主程序类，说明是一个springboo</description>
     </item>
     
     <item>

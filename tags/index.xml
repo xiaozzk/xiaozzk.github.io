@@ -35,6 +35,24 @@
     </item>
     
     <item>
+      <title>docker</title>
+      <link>https://xiaozzk.github.io/tags/docker/</link>
+      <pubDate>Wed, 26 May 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://xiaozzk.github.io/tags/docker/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>k8s</title>
+      <link>https://xiaozzk.github.io/tags/k8s/</link>
+      <pubDate>Wed, 26 May 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://xiaozzk.github.io/tags/k8s/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>SQL</title>
       <link>https://xiaozzk.github.io/tags/sql/</link>
       <pubDate>Wed, 15 Jul 2020 00:00:00 +0000</pubDate>
@@ -44,11 +62,29 @@
     </item>
     
     <item>
+      <title>kafka</title>
+      <link>https://xiaozzk.github.io/tags/kafka/</link>
+      <pubDate>Wed, 17 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://xiaozzk.github.io/tags/kafka/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>spring cloud</title>
       <link>https://xiaozzk.github.io/tags/spring-cloud/</link>
       <pubDate>Sun, 01 Dec 2019 00:00:00 +0000</pubDate>
       
       <guid>https://xiaozzk.github.io/tags/spring-cloud/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>spring boot</title>
+      <link>https://xiaozzk.github.io/tags/spring-boot/</link>
+      <pubDate>Tue, 04 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://xiaozzk.github.io/tags/spring-boot/</guid>
       <description></description>
     </item>
     
